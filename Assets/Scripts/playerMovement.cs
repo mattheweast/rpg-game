@@ -8,7 +8,7 @@ public class playerMovement : MonoBehaviour
 
     Vector2 movement; // Stores the current movement direction
 
-    // Update is called once per frame
+    // Update reads input every frame and stores the direction in 'movement'
     void Update()
     {
         // Check if a keyboard is connected (new Input System)
@@ -32,7 +32,7 @@ public class playerMovement : MonoBehaviour
         }
     }
 
-    // FixedUpdate is called at a fixed interval and is used for physics updates
+    // FixedUpdate applies the stored movement to the Rigidbody2D for smooth physics-based movement
     void FixedUpdate()
     {
         // Apply movement to the Rigidbody2D using linearVelocity (new API)
