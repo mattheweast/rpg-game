@@ -1,12 +1,20 @@
 using UnityEngine;
 using UnityEngine.InputSystem; // Import the new Input System namespace
 
-public class playerMovement : MonoBehaviour
+[RequireComponent(typeof(Rigidbody2D))]
+public class PlayerMovement : MonoBehaviour
 {
     public float speed = 5; // Movement speed multiplier
     public Rigidbody2D rb;  // Reference to the Rigidbody2D component
 
     Vector2 movement; // Stores the current movement direction
+
+    void Awake()
+    {
+        // Auto-assign if not set in Inspector
+        if (rb == null)
+            rb = GetComponent<Rigidbody2D>();
+    }
 
     // Update reads input every frame and stores the direction in 'movement'
     void Update()
@@ -35,7 +43,8 @@ public class playerMovement : MonoBehaviour
     // FixedUpdate applies the stored movement to the Rigidbody2D for smooth physics-based movement
     void FixedUpdate()
     {
-        // Apply movement to the Rigidbody2D using linearVelocity (new API)
-        rb.linearVelocity = movement * speed;
+        // Null check for safety
+        if (rb != null)
+            rb.linearVelocity = movement * speed;
     }
 }
