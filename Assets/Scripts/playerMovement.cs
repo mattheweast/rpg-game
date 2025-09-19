@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 using UnityEngine.InputSystem; // Import the new Input System namespace
 
@@ -8,7 +7,9 @@ public class PlayerMovement : MonoBehaviour
     public float speed = 5; // Movement speed multiplier
     public Rigidbody2D rb;  // Reference to the Rigidbody2D component
 
-    public Animator anim;
+    public Animator anim; // Reference to the Animator component for controlling animations
+
+    public int facingDirection = 1;
 
     Vector2 movement; // Stores the current movement direction
 
@@ -38,14 +39,26 @@ public class PlayerMovement : MonoBehaviour
             if (Keyboard.current.sKey.isPressed) vertical -= 1f;
             if (Keyboard.current.wKey.isPressed) vertical += 1f;
 
-            anim.SetFloat("horizontal", Mathf.Abs(horizontal));
-            anim.SetFloat("vertical", Mathf.Abs(vertical));
+            // Only update animator if assigned
+            if (anim != null)
+            {
+                anim.SetFloat("horizontal", Mathf.Abs(horizontal));
+                anim.SetFloat("vertical", Mathf.Abs(vertical));
+            }
+
+            // Flip only if moving horizontally and direction changes
+            if (horizontal != 0 && 
+                ((horizontal > 0 && transform.localScale.x < 0) ||
+                 (horizontal < 0 && transform.localScale.x > 0)))
+            {
+                Flip();
+            }
 
             // Normalize to prevent faster diagonal movement
             movement = new Vector2(horizontal, vertical).normalized;
         }
 
-        // Update animator Speed parameter based on movement
+        // Set the "speed" parameter in the Animator to the current movement magnitude
         if (anim != null && anim.runtimeAnimatorController != null)
         {
             anim.SetFloat("speed", movement.magnitude);
@@ -59,6 +72,12 @@ public class PlayerMovement : MonoBehaviour
         if (rb != null)
             rb.linearVelocity = movement * speed;
 
-        
+
+    }
+
+    void Flip()
+    {
+        facingDirection *= -1;
+    transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
     }
 }
