@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem; // Import the new Input System namespace
 
@@ -6,6 +7,8 @@ public class PlayerMovement : MonoBehaviour
 {
     public float speed = 5; // Movement speed multiplier
     public Rigidbody2D rb;  // Reference to the Rigidbody2D component
+
+    public Animator anim;
 
     Vector2 movement; // Stores the current movement direction
 
@@ -35,8 +38,17 @@ public class PlayerMovement : MonoBehaviour
             if (Keyboard.current.sKey.isPressed) vertical -= 1f;
             if (Keyboard.current.wKey.isPressed) vertical += 1f;
 
+            anim.SetFloat("horizontal", Mathf.Abs(horizontal));
+            anim.SetFloat("vertical", Mathf.Abs(vertical));
+
             // Normalize to prevent faster diagonal movement
             movement = new Vector2(horizontal, vertical).normalized;
+        }
+
+        // Update animator Speed parameter based on movement
+        if (anim != null && anim.runtimeAnimatorController != null)
+        {
+            anim.SetFloat("speed", movement.magnitude);
         }
     }
 
@@ -46,5 +58,7 @@ public class PlayerMovement : MonoBehaviour
         // Null check for safety
         if (rb != null)
             rb.linearVelocity = movement * speed;
+
+        
     }
 }
